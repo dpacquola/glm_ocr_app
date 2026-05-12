@@ -39,7 +39,7 @@ OLLAMA_HOSTS = _candidate_hosts()
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "glm-ocr:latest")
 print(f"[CONFIG] Ollama hosts: {OLLAMA_HOSTS}, model: {OLLAMA_MODEL}")
 
-app = FastAPI(title="GLM OCR Web App Bis")
+app = FastAPI(title="GLM OCR Web App")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
