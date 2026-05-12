@@ -167,7 +167,59 @@ RunPod senza Network Volume perde tutti i dati quando il pod viene fermato.
 
 ---
 
-## 8. Raccomandazioni finali
+## 8. Gestione con GitHub
+
+Per evitare di ricaricare i file su tmpfiles ogni volta che modifichi qualcosa, abbiamo configurato Git + GitHub.
+
+### Setup iniziale
+
+**In WSL:**
+```bash
+cd /home/dpac/GLM_OCR_APP
+git init
+git config user.email "davide@email.com"
+git config user.name "Davide"
+git add -A
+git commit -m "primo commit"
+git branch -M main
+git remote add origin https://github.com/dpacquola/glm_ocr_app.git
+git push -u origin main
+```
+
+**Sul pod RunPod (prima volta):**
+```bash
+cd /root
+git clone https://github.com/dpacquola/glm_ocr_app.git app
+cd /root/app/backend
+pip3 install -r requirements.txt
+sed -i 's/host="localhost"/host="0.0.0.0"/' serve.py
+nohup python3 serve.py > /tmp/server.log 2>&1 &
+```
+
+### Aggiornamento dopo modifiche locali
+
+**In WSL (dopo aver modificato i file):**
+```bash
+cd /home/dpac/GLM_OCR_APP
+git add -A
+git commit -m "descrizione delle modifiche"
+git push
+```
+
+**Sul pod (per ricevere gli aggiornamenti):**
+```bash
+cd /root/app && git pull && pkill -f serve.py && cd /root/app/backend && unset OLLAMA_HOST && nohup python3 serve.py > /tmp/server.log 2>&1 &
+```
+
+### Vantaggi
+- Versionamento delle modifiche
+- Backup su cloud
+- Aggiornamento rapido del pod con `git pull`
+- Possibilità di collaborare
+
+---
+
+## 9. Raccomandazioni finali
 
 | Cosa | Consiglio |
 |------|-----------|
@@ -184,7 +236,7 @@ RunPod senza Network Volume perde tutti i dati quando il pod viene fermato.
 ### URL
 - App: `https://3x9wfu5horvbfb-8000.proxy.runpod.net`
 - RunPod: `https://runpod.io`
-- Download app: `https://tmpfiles.org/dl/37640595/app.bin`
+- GitHub: `https://github.com/dpacquola/glm_ocr_app`
 
 ### SSH
 ```
@@ -194,12 +246,17 @@ ssh 3x9wfu5horvbfb-64411a7e@ssh.runpod.io -i ~/.ssh/id_ed25519
 ### Avvio rapido dopo riavvio pod
 ```bash
 unset OLLAMA_HOST
-cd /root/backend && nohup python3 serve.py > /tmp/server.log 2>&1 &
+cd /root/app/backend && nohup python3 serve.py > /tmp/server.log 2>&1 &
 ```
 Oppure con Network Volume:
 ```bash
 unset OLLAMA_HOST
-cd /workspace/backend && nohup python3 serve.py > /tmp/server.log 2>&1 &
+cd /workspace/app/backend && nohup python3 serve.py > /tmp/server.log 2>&1 &
+```
+
+### Aggiornamento dopo modifiche in locale
+```bash
+cd /root/app && git pull && pkill -f serve.py && cd /root/app/backend && unset OLLAMA_HOST && nohup python3 serve.py > /tmp/server.log 2>&1 &
 ```
 
 ---
