@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLM OCR WebApp</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+  <header>
+    <h1>GLM OCR</h1>
+    <p class="subtitle">Trasforma PDF / immagini in Markdown pulito</p>
+  </header>
+
+  <div id="upload-zone" class="upload-zone">
+    <input type="file" id="file-input" accept=".pdf,.png,.jpg,.jpeg,.bmp,.tiff,.webp">
+    <label for="file-input" class="upload-label">
+      <span class="upload-icon">+</span>
+      <span>Carica PDF o immagine</span>
+    </label>
+    <div id="upload-progress" class="hidden">Caricamento in corso...</div>
+  </div>
+
+  <div id="viewer" class="hidden">
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <span id="filename-display"></span>
+      </div>
+      <div class="toolbar-center">
+        <button id="btn-prev" disabled>&larr; Precedente</button>
+        <span id="page-info">Pagina <span id="current-page">1</span> / <span id="total-pages">1</span></span>
+        <button id="btn-next">Successiva &rarr;</button>
+      </div>
+      <div class="toolbar-right">
+        <button id="btn-ocr-page" class="btn-primary">OCR questa pagina</button>
+        <button id="btn-ocr-all">OCR tutto</button>
+      </div>
+    </div>
+
+    <div id="split-view">
+      <div class="panel panel-left">
+        <div class="panel-header">Originale</div>
+        <div class="panel-body" id="original-panel">
+          <img id="page-image" alt="Pagina del documento">
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="panel panel-right">
+        <div class="panel-header">
+          <span>Risultato OCR</span>
+          <div class="panel-header-actions">
+            <button id="btn-download" class="btn-small" title="Scarica come .md">Scarica</button>
+            <button id="btn-copy" class="btn-small" title="Copia markdown">Copia</button>
+          </div>
+        </div>
+        <div class="panel-body" id="ocr-panel">
+          <div id="ocr-raw-section" class="ocr-sub-panel hidden">
+            <div class="sub-panel-header">Markdown grezzo</div>
+            <pre id="ocr-raw" class="ocr-raw-content"></pre>
+          </div>
+          <div class="ocr-sub-divider"></div>
+          <div id="ocr-rendered-section" class="ocr-sub-panel hidden">
+            <div class="sub-panel-header">Anteprima</div>
+            <div id="ocr-content" class="markdown-body"></div>
+          </div>
+          <div id="ocr-placeholder" class="placeholder">Clicca "OCR questa pagina" per analizzare</div>
+          <div id="ocr-loading" class="hidden">Analisi in corso...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
